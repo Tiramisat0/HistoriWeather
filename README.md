@@ -1,6 +1,28 @@
 # HistoriWeather  
 **HistoriWeather** is a simple web app which lets you easily browse historical weather data and archives anywhere in the world. 
 
+## How to Run
+
+### 1. Install dependencies 
+   Make sure you have Python 3
+   ```bash
+   pip install flask flask-cors requests
+   ```
+   
+### 2. Run Backend
+   ```bash
+   python app.py
+   ```
+
+   You should see: 
+   ```
+   Running on http://127.0.0.1:5000/
+   ```
+### 3. Open the app in your browser
+   ```
+   http://127.0.0.1:5000/
+   ```
+
 
 ## Features
 Easily look up **hourly temperature data** 
