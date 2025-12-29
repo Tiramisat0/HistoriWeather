@@ -1,27 +1,27 @@
 import requests
 
-base_url = "https://archive-api.open-meteo.com/v1/archive?"
+BASE_URL = "https://archive-api.open-meteo.com/v1/archive"
+
 
 def get_hourly_temps(latitude, longitude, date):
-    url = (
-        f"{base_url}"
-        f"latitude={latitude}&longitude={longitude}"
-        f"&start_date={date}&end_date={date}"
-        f"&hourly=temperature_2m"
-        f"&timezone=auto"
-    )
+    """
+    Fetch hourly 2m temperature data for a single date.
+    Returns a dict like {"time": [...], "temperature_2m": [...]}.
+    """
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "start_date": date,
+        "end_date": date,
+        "hourly": "temperature_2m",
+        "timezone": "auto",
+    }
 
-    response = requests.get(url)
+    resp = requests.get(BASE_URL, params=params, timeout=10)
 
-    if response.status_code == 200:
-        data = response.json()
-        temps = data.get("hourly", {})
-        print("Success!")
-        return temps
-    else:
-        print(f"Unable to retrieve data: {response.status_code}")
-        return None
+    if resp.status_code != 200:
+        # Let the caller handle this
+        raise RuntimeError(f"Weather API error: {resp.status_code} {resp.text[:200]}")
 
-# Example: Toronto on Aug 1, 2023
-hourly_data = get_hourly_temps(43.690685, -79.41174, "2025-10-06")
-print(hourly_data)
+    data = resp.json()
+    return data.get("hourly", {})
