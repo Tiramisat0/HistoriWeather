@@ -4,7 +4,7 @@
 ## How to Run
 
 ### 1. Install dependencies 
-   Make sure you have Python 3
+   *Make sure you have Python 3
    ```bash
    pip install flask flask-cors requests
    ```
@@ -25,12 +25,14 @@
 
 
 ## Features
-Easily look up **hourly temperature data** 
+Easily look up **Historical Temperature data** with hourly temps for short ranges, 
+as well as daily Min/Max for longer ranges. 
 
 Just enter:
 - Latitude  
 - Longitude  
-- Date  
+- Start Date
+- End Date 
 
 and the app fetches real data from the **Open-Meteo Archive API**, then displays an **interactive line chart** and a **scrollable data table**  
 
@@ -39,7 +41,6 @@ It’s lightweight, fast, and requires no API keys.
 
 
 **Future features/ideas:** 
-- Multi-day Charts
 - More products: precipitation, wind, humidity, etc.
 - Location by City Name/Map
 - Export CSV/other data types
@@ -60,6 +61,6 @@ It’s lightweight, fast, and requires no API keys.
 - **Chart.js** — charts hourly temperatures
 
 ### Data Source
-- **Open-Meteo Archive API** - A Free API with no key required. Has global coverage and 
+- **Open-Meteo Archive API** - A Free API with no key required. 
 
 
