@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HistoriWeather – Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white py-6 shadow-md">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center">
+      <h1 class="text-3xl font-bold">HistoriWeather</h1>
+      <nav class="mt-3 sm:mt-0 space-x-4">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/day" class="hover:underline">Hourly Temp</a>
+        <a href="/range" class="hover:underline">Daily Temp</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-6xl mx-auto px-6 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h2 class="text-4xl font-bold mb-4">Explore Historical Weather Data</h2>
+        <p class="text-gray-700 mb-4">
+          HistoriWeather lets you query historical temperature data anywhere on Earth using the Open-Meteo archive API.
+        </p>
+        <p class="text-gray-600 mb-6">
+          Choose whether you want detailed hourly temperatures for a <strong>single day</strong> or for a
+          <strong>range of days</strong>.
+        </p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Get Started</h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li>Enter latitude &amp; longitude for any location.</li>
+          <li>Pick your date(s) of interest.</li>
+          <li>Visualize hourly temperatures with interactive charts and tables.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section class="max-w-6xl mx-auto px-6 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- One Day card -->
+    <a href="/day"
+       class="block bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+      <h3 class="text-2xl font-semibold mb-2">Hourly Temps for One Day</h3>
+      <p class="text-gray-600 mb-4">
+        View the full hourly temperature curve for a single calendar day at your chosen location.
+      </p>
+      <span class="inline-block mt-2 text-blue-600 font-semibold">
+        Open 1-Day Tool →
+      </span>
+    </a>
+
+    <!-- Range card -->
+    <a href="/range"
+       class="block bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+      <h3 class="text-2xl font-semibold mb-2">Hourly Temps for a Date Range</h3>
+      <p class="text-gray-600 mb-4">
+        Analyze temperature patterns over multiple days with continuous hourly data.
+      </p>
+      <span class="inline-block mt-2 text-blue-600 font-semibold">
+        Open Range Tool →
+      </span>
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center">
+      <p>© 2025 HistoriWeather. All rights reserved.</p>
+      <div class="space-x-4 mt-3 sm:mt-0">
+        <a href="#" class="hover:text-white">Privacy</a>
+        <a href="#" class="hover:text-white">Terms</a>
+        <a href="#" class="hover:text-white">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

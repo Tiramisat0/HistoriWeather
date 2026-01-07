@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HistoriWeather – Hourly (1 day – 4 months)</title>
+  <title>HistoriWeather – Daily High/Low</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -16,8 +16,8 @@
       <h1 class="text-3xl font-bold">HistoriWeather</h1>
       <nav class="mt-3 sm:mt-0 space-x-4">
         <a href="/" class="hover:underline">Home</a>
-        <a href="/hourly" class="hover:underline font-semibold underline">Hourly (≤ 4 months)</a>
-        <a href="/daily" class="hover:underline">Daily High/Low</a>
+        <a href="/hourly" class="hover:underline">Hourly (≤ 4 months)</a>
+        <a href="/daily" class="hover:underline font-semibold underline">Daily High/Low</a>
       </nav>
     </div>
   </header>
@@ -26,21 +26,20 @@
   <section class="max-w-6xl mx-auto px-6 py-12">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <div>
-        <h2 class="text-4xl font-bold mb-4">Hourly Temperatures (Short Range)</h2>
+        <h2 class="text-4xl font-bold mb-4">Daily High and Low Temperatures</h2>
         <p class="text-gray-700 mb-4">
-          Get detailed hourly temperature data for ranges from a single day
-          up to about four months.
+          Explore long-term trends with daily minimum and maximum temperatures over large date ranges.
         </p>
         <p class="text-gray-600">
-          For longer-term trends, use the <strong>Daily High/Low</strong> page instead.
+          Ideal for ranges longer than four months, or whenever you want a summarized daily view.
         </p>
       </div>
       <div class="bg-white rounded-xl shadow-md p-6">
-        <h3 class="text-xl font-semibold mb-4">Hourly Range Search</h3>
+        <h3 class="text-xl font-semibold mb-4">Daily Range Search</h3>
         <ul class="list-disc list-inside text-gray-700 space-y-2">
-          <li>Range: 1 to 120 days (inclusive).</li>
-          <li>Hourly 2m temperature (°C).</li>
-          <li>Line chart + data table output.</li>
+          <li>Any range supported by the API (months to years).</li>
+          <li>Daily 2m temperature min and max (°C).</li>
+          <li>Two-line chart (high/low) + data table.</li>
         </ul>
       </div>
     </div>
@@ -48,7 +47,7 @@
 
   <!-- Input Section -->
   <section class="max-w-4xl mx-auto px-6 py-12 bg-white rounded-xl shadow-md -mt-10 relative z-10">
-    <h3 class="text-2xl font-semibold text-center mb-6">Search Hourly Data (1–120 days)</h3>
+    <h3 class="text-2xl font-semibold text-center mb-6">Search Daily High/Low (Any Range)</h3>
     <form class="grid grid-cols-1 md:grid-cols-4 gap-6" onsubmit="return false;">
       <div>
         <label class="block font-semibold mb-1">Latitude</label>
@@ -73,7 +72,7 @@
       <div class="md:col-span-4 flex justify-center">
         <button id="fetchBtn" type="button"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">
-          Fetch Hourly Data
+          Fetch Daily High/Low
         </button>
       </div>
     </form>
@@ -85,7 +84,7 @@
     <p class="text-gray-600" id="resultsMessage">Your data will appear here once retrieved.</p>
 
     <div class="mt-8 h-[400px]">
-      <h4 class="text-xl font-semibold mb-3">Hourly Temperature Chart</h4>
+      <h4 class="text-xl font-semibold mb-3">Daily High/Low Chart</h4>
       <canvas id="tempChart" class="w-full h-full"></canvas>
     </div>
 
@@ -119,7 +118,6 @@
     const tempChartCanvas = document.getElementById("tempChart");
 
     let tempChart = null;
-    const MAX_HOURLY_DAYS = 120;
 
     fetchBtn.addEventListener("click", async () => {
       const lat = latInput.value.trim();
@@ -151,28 +149,12 @@
       const msPerDay = 24 * 60 * 60 * 1000;
       const spanDays = Math.round((end - start) / msPerDay) + 1;
 
-      if (spanDays < 1) {
-        setMessage("Range must be at least 1 day.", "error");
-        clearOutput();
-        return;
-      }
-
-      if (spanDays > MAX_HOURLY_DAYS) {
-        setMessage(
-          `Range is ${spanDays} days, which is too long for hourly data (max ${MAX_HOURLY_DAYS}). ` +
-          `Use the Daily High/Low page for longer ranges.`,
-          "error"
-        );
-        clearOutput();
-        return;
-      }
-
-      setMessage(`Fetching hourly data for ${spanDays} day(s)...`, "neutral");
+      setMessage(`Fetching daily high/low for ${spanDays} day(s)...`, "neutral");
       clearOutput();
 
       try {
         const resp = await fetch(
-          `/api/hourly?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
+          `/api/daily?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
         );
 
         if (!resp.ok) {
@@ -182,15 +164,16 @@
 
         const data = await resp.json();
         const times = data.time || [];
-        const temps = data.temperature_2m || [];
+        const tMin = data.temperature_2m_min || [];
+        const tMax = data.temperature_2m_max || [];
 
-        if (!times.length || !temps.length) {
-          setMessage("No hourly data returned for that date range/location.", "error");
+        if (!times.length || !tMin.length || !tMax.length) {
+          setMessage("No daily data returned for that date range/location.", "error");
           clearOutput();
           return;
         }
 
-        renderHourly(times, temps, startDate, endDate, spanDays);
+        renderDaily(times, tMin, tMax, startDate, endDate, spanDays);
 
       } catch (err) {
         console.error(err);
@@ -220,9 +203,9 @@
       }
     }
 
-    function renderHourly(times, temps, startDate, endDate, spanDays) {
+    function renderDaily(times, tMin, tMax, startDate, endDate, spanDays) {
       setMessage(
-        `Showing HOURLY temperatures from ${startDate} to ${endDate} (${spanDays} day(s)).`,
+        `Showing DAILY min/max temperatures from ${startDate} to ${endDate} (${spanDays} day(s)).`,
         "success"
       );
 
@@ -231,32 +214,31 @@
           <thead>
             <tr class="border-b">
               <th class="py-2 px-3 font-semibold">Date</th>
-              <th class="py-2 px-3 font-semibold">Hour</th>
-              <th class="py-2 px-3 font-semibold">Temperature (°C)</th>
+              <th class="py-2 px-3 font-semibold">Min (°C)</th>
+              <th class="py-2 px-3 font-semibold">Max (°C)</th>
             </tr>
           </thead>
           <tbody>
       `;
 
       const labels = [];
-      const values = [];
+      const valsMin = [];
+      const valsMax = [];
 
       for (let i = 0; i < times.length; i++) {
-        const timeStr = times[i]; // "YYYY-MM-DDTHH:MM"
-        const temp = temps[i];
+        const dateStr = times[i];
+        const vMin = tMin[i];
+        const vMax = tMax[i];
 
-        const parts = timeStr.split("T");
-        const datePart = parts[0] || "";
-        const timePart = parts[1] || timeStr;
-
-        labels.push(`${datePart} ${timePart}`);
-        values.push(temp);
+        labels.push(dateStr);
+        valsMin.push(vMin);
+        valsMax.push(vMax);
 
         tableHtml += `
           <tr class="border-b last:border-0">
-            <td class="py-2 px-3">${datePart}</td>
-            <td class="py-2 px-3">${timePart}</td>
-            <td class="py-2 px-3">${Number(temp).toFixed(1)}</td>
+            <td class="py-2 px-3">${dateStr}</td>
+            <td class="py-2 px-3">${Number(vMin).toFixed(1)}</td>
+            <td class="py-2 px-3">${Number(vMax).toFixed(1)}</td>
           </tr>
         `;
       }
@@ -270,19 +252,27 @@
         type: "line",
         data: {
           labels: labels,
-          datasets: [{
-            label: "Temperature (°C)",
-            data: values,
-            fill: false,
-            tension: 0.3
-          }]
+          datasets: [
+            {
+              label: "Max (°C)",
+              data: valsMax,
+              fill: false,
+              tension: 0.3
+            },
+            {
+              label: "Min (°C)",
+              data: valsMin,
+              fill: false,
+              tension: 0.3
+            }
+          ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
             x: {
-              title: { display: true, text: "Date & Time" },
+              title: { display: true, text: "Date" },
               ticks: {
                 autoSkip: true,
                 maxTicksLimit: 12
@@ -297,7 +287,8 @@
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  return context.parsed.y.toFixed(1) + " °C";
+                  return context.dataset.label + ": " +
+                         context.parsed.y.toFixed(1) + " °C";
                 }
               }
             }
