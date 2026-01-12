@@ -6,7 +6,7 @@
 ### 1. Install dependencies 
    *Make sure you have Python 3
    ```bash
-   pip install flask flask-cors requests
+   pip install flask flask-cors requests pandas numpy matplotlib seaborn scikit-learn
    ```
    
 ### 2. Run Backend
@@ -25,14 +25,12 @@
 
 
 ## Features
-Easily look up **Historical Temperature data** with hourly temps for short ranges, 
-as well as daily Min/Max for longer ranges. 
+Easily look up **hourly temperature data** 
 
 Just enter:
 - Latitude  
 - Longitude  
-- Start Date
-- End Date 
+- Date  
 
 and the app fetches real data from the **Open-Meteo Archive API**, then displays an **interactive line chart** and a **scrollable data table**  
 
@@ -61,6 +59,6 @@ It’s lightweight, fast, and requires no API keys.
 - **Chart.js** — charts hourly temperatures
 
 ### Data Source
-- **Open-Meteo Archive API** - A Free API with no key required. 
+- **Open-Meteo Archive API** - A Free API with no key required. Has global coverage and 
 
 
